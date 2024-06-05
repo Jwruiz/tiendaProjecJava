@@ -1,33 +1,56 @@
 package tienda.com.example.tienda.persistencia;
 
 import org.springframework.stereotype.Repository;
+import tienda.com.example.tienda.dominio.Product;
+import tienda.com.example.tienda.dominio.repositorio.ProductRepository;
 import tienda.com.example.tienda.persistencia.crud.ProductoCrudRepository;
 import tienda.com.example.tienda.persistencia.entities.Producto;
+import tienda.com.example.tienda.persistencia.mappers.ProductMapper;
 
 import java.util.List;
 
 @Repository
-public class ProductoRepository {
+public class ProductoRepository implements ProductRepository {
 
     private ProductoCrudRepository productoCrudRepository;
+    private ProductMapper mapper;
 
-    public List<Producto> getAll(){
-        return (List<Producto>) productoCrudRepository.findAll();
+    @Override
+    public List<Product> getAll(){
+
+       List<Producto> productos = (List<Producto>) productoCrudRepository.findAll();
+       return mapper.toProducts(productos);
     }
 
     public void deleteProducto(int id){
         productoCrudRepository.deleteById(id);
     }
 
-    public Producto findByCategory(int id){
-        return productoCrudRepository.findByIdCategoria(id);
+    @Override
+    public List<Product> findByCategory(int id){
+
+        List<Producto> productos = (List<Producto>) productoCrudRepository.findByIdCategoria(id);
+        return mapper.toProducts(productos);
     }
 
-    public List<Producto> stockBajo(int cantidad){
-        return (List<Producto>) productoCrudRepository.findByCantidadStockLessThan(cantidad);
+    @Override
+    public void deleteById(int id) {
+        productoCrudRepository.deleteById(id);
+
     }
 
-    public Producto createProducto(Producto producto){
-        return productoCrudRepository.save(producto);
+    @Override
+    public List<Product> getScarseProduct(int productId) {
+        List<Producto> productos = (List<Producto>) productoCrudRepository.findByCantidadStockLessThan(productId);
+        return mapper.toProducts(productos);
     }
-}
+
+    @Override
+    public Product save(Product product) {
+        Producto producto = mapper.producto(product);
+        return mapper.toProduct(productoCrudRepository.save(producto));
+    }
+
+
+    }
+
