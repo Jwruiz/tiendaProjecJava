@@ -1,5 +1,6 @@
 package tienda.com.example.tienda.persistencia;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import tienda.com.example.tienda.dominio.Product;
 import tienda.com.example.tienda.dominio.repositorio.ProductRepository;
@@ -12,8 +13,17 @@ import java.util.List;
 @Repository
 public class ProductoRepository implements ProductRepository {
 
+    @Autowired
     private ProductoCrudRepository productoCrudRepository;
+    @Autowired
     private ProductMapper mapper;
+
+
+    @Autowired
+    public ProductoRepository(ProductoCrudRepository productoCrudRepository, ProductMapper mapper) {
+        this.productoCrudRepository = productoCrudRepository;
+        this.mapper = mapper;
+    }
 
     @Override
     public List<Product> getAll(){
