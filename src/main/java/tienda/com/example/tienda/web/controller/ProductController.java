@@ -10,12 +10,12 @@ import tienda.com.example.tienda.dominio.servicios.ProductService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
-public class Controller {
+@RequestMapping("/products")
+public class ProductController {
 
     @Autowired
     private ProductService productService;
-    @GetMapping("/products")
+    @GetMapping("/all")
     public List<Product> getAll(){
         return productService.getAll();
 }
